@@ -16,19 +16,19 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `location` | `landingZones.sqlDatabases[].location` | `input.json` |
-| `serverName` | `landingZones.sqlDatabases[].serverName` | `input.json` |
-| `databaseName` | `landingZones.sqlDatabases[].databaseName` | `input.json` |
-| `administratorLogin` | `landingZones.sqlDatabases[].administratorLogin` | `input.json` |
+| `location` | `landingZones.sqlDatabases&#91;&#93;.location` | `input.json` |
+| `serverName` | `landingZones.sqlDatabases&#91;&#93;.serverName` | `input.json` |
+| `databaseName` | `landingZones.sqlDatabases&#91;&#93;.databaseName` | `input.json` |
+| `administratorLogin` | `landingZones.sqlDatabases&#91;&#93;.administratorLogin` | `input.json` |
 | `administratorLoginPassword` | `secrets.SQL_ADMIN_PASSWORD` mapped to `SQL_ADMIN_PASSWORD`, then passed as secure Bicep parameter | GitHub Actions secret; never stored in `input.json` |
-| `sqlServerVersion` | `landingZones.sqlDatabases[].sqlServerVersion` | `input.json` |
-| `databaseSkuName` | `landingZones.sqlDatabases[].databaseSkuName` | `input.json` |
-| `databaseSkuTier` | `landingZones.sqlDatabases[].databaseSkuTier` | `input.json` |
-| `databaseCapacity` | `landingZones.sqlDatabases[].databaseCapacity` | `input.json` |
-| `databaseMaxSizeBytes` | `landingZones.sqlDatabases[].databaseMaxSizeBytes` | `input.json` |
-| `publicNetworkAccess` | `landingZones.sqlDatabases[].publicNetworkAccess` | `input.json` |
-| `minimumTlsVersion` | `landingZones.sqlDatabases[].minimumTlsVersion` | `input.json` |
-| `tags` | `landingZones.sqlDatabases[].tags` | `input.json` |
+| `sqlServerVersion` | `landingZones.sqlDatabases&#91;&#93;.sqlServerVersion` | `input.json` |
+| `databaseSkuName` | `landingZones.sqlDatabases&#91;&#93;.databaseSkuName` | `input.json` |
+| `databaseSkuTier` | `landingZones.sqlDatabases&#91;&#93;.databaseSkuTier` | `input.json` |
+| `databaseCapacity` | `landingZones.sqlDatabases&#91;&#93;.databaseCapacity` | `input.json` |
+| `databaseMaxSizeBytes` | `landingZones.sqlDatabases&#91;&#93;.databaseMaxSizeBytes` | `input.json` |
+| `publicNetworkAccess` | `landingZones.sqlDatabases&#91;&#93;.publicNetworkAccess` | `input.json` |
+| `minimumTlsVersion` | `landingZones.sqlDatabases&#91;&#93;.minimumTlsVersion` | `input.json` |
+| `tags` | `landingZones.sqlDatabases&#91;&#93;.tags` | `input.json` |
 
 **Secret handling:** The SQL administrator password comes only from GitHub Actions secret `SQL_ADMIN_PASSWORD`. The secret is exposed to the job step as an environment variable and passed as a secure Bicep parameter; it must not be placed in `input.json`.
 
@@ -47,7 +47,7 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 ```mermaid
 flowchart TD
   A[deploy-storage completes] --> B[deploy-sql job]
-  C[input.json: sqlDatabases[]] --> D[Map server/database configuration]
+  C[input.json: sqlDatabases&#91;&#93;] --> D[Map server/database configuration]
   E[GitHub secret: SQL_ADMIN_PASSWORD] --> F[Secure parameter injection]
   D --> G[What-If + sql.bicep]
   F --> G
@@ -107,7 +107,7 @@ The `deploy-sql` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-sql` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/database/sql.bicep` |
-| Input collection | `landingZones.sqlDatabases[]` |
+| Input collection | `landingZones.sqlDatabases&#91;&#93;` |
 | Azure CLI operation | `az deployment group what-if`, followed by `create` |
 
 ## 7. Operational notes
