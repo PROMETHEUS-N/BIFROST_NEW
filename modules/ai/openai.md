@@ -16,12 +16,12 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `accountName` | `landingZones.openAiServices[].name` | `input.json` (base name) |
-| `location` | `landingZones.openAiServices[].location` | `input.json` |
-| `skuName` | `landingZones.openAiServices[].skuName` | `input.json` |
-| `customSubDomainName` | `landingZones.openAiServices[].customSubDomainName` | `input.json` |
-| `publicNetworkAccess` | `landingZones.openAiServices[].publicNetworkAccess` | `input.json` |
-| `tags` | `landingZones.openAiServices[].tags` | `input.json` |
+| `accountName` | `landingZones.openAiServices&#91;&#93;.name` | `input.json` (base name) |
+| `location` | `landingZones.openAiServices&#91;&#93;.location` | `input.json` |
+| `skuName` | `landingZones.openAiServices&#91;&#93;.skuName` | `input.json` |
+| `customSubDomainName` | `landingZones.openAiServices&#91;&#93;.customSubDomainName` | `input.json` |
+| `publicNetworkAccess` | `landingZones.openAiServices&#91;&#93;.publicNetworkAccess` | `input.json` |
+| `tags` | `landingZones.openAiServices&#91;&#93;.tags` | `input.json` |
 
 **Secret handling:** No resource-specific password is consumed by this module. 
 
@@ -40,7 +40,7 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 ```mermaid
 flowchart TD
   A[deploy-sql completes] --> B[deploy-openai job]
-  C[input.json: openAiServices[]] --> D[Map account properties]
+  C[input.json: openAiServices&#91;&#93;] --> D[Map account properties]
   D --> E[What-If]
   E --> F[openai.bicep]
   F --> G[Generate base name + 5-char hash]
@@ -98,7 +98,7 @@ The `deploy-openai` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-openai` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/ai/openai.bicep` |
-| Input collection | `landingZones.openAiServices[]` |
+| Input collection | `landingZones.openAiServices&#91;&#93;` |
 | Azure CLI operation | `az deployment group what-if`, followed by `create` |
 
 ## 7. Operational notes
