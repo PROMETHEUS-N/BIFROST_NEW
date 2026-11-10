@@ -19,6 +19,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - name: Check Azure CLI, Bicep and required secrets
         shell: pwsh
         env:
@@ -31,12 +38,6 @@ jobs:
           if (-not (Test-Path $az)) { throw "Azure CLI not found at $az" }
           & $az version
           if ($LASTEXITCODE -ne 0) { throw "Azure CLI check failed." }
-          & $az bicep install
-          if ($LASTEXITCODE -ne 0) { throw "Bicep installation failed." }
-          # Upgrade Bicep
-          & $az bicep upgrade
-          if ($LASTEXITCODE -ne 0) { throw "Bicep upgrade failed." }
-          & $az bicep version
           if ([string]::IsNullOrWhiteSpace($env:VM_ADMIN_PASSWORD)) { throw "VM_ADMIN_PASSWORD secret is missing." }
           if ([string]::IsNullOrWhiteSpace($env:SQL_ADMIN_PASSWORD)) { throw "SQL_ADMIN_PASSWORD secret is missing." }
           if ([string]::IsNullOrWhiteSpace($env:AZURE_SUBSCRIPTION_ID)) { throw "AZURE_SUBSCRIPTION_ID secret is missing or unavailable." }
@@ -84,6 +85,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - name: Check subscription secret is available
         shell: pwsh
         env:
@@ -128,6 +136,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -161,6 +176,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -193,6 +215,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -222,6 +251,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -253,6 +289,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -282,6 +325,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -311,6 +361,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -341,6 +398,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -372,6 +436,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -402,6 +473,13 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az version
+      - name: Install or update Bicep CLI from Microsoft
+        shell: bash
+        run: |
+          set -euo pipefail
+          az bicep install
+          az bicep upgrade
+          az bicep version
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
