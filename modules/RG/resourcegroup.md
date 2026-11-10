@@ -16,9 +16,9 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `rgname` | `landingZones.resourceGroups[].rgName` | `input.json` |
-| `location` | `landingZones.resourceGroups[].location` | `input.json` |
-| `tags` | `landingZones.resourceGroups[].tags` | `input.json` |
+| `rgname` | `landingZones.resourceGroups&#91;&#93;.rgName` | `input.json` |
+| `location` | `landingZones.resourceGroups&#91;&#93;.location` | `input.json` |
+| `tags` | `landingZones.resourceGroups&#91;&#93;.tags` | `input.json` |
 
 **Secret handling:** No resource-specific password is consumed by this module. 
 
@@ -34,7 +34,7 @@ Resource group creation is the first provisioning stage.
 
 ```mermaid
 flowchart TD
-  A[GitHub Actions: deploy-rg] --> B[input.json: resourceGroups[]]
+  A[GitHub Actions: deploy-rg] --> B[input.json: resourceGroups&#91;&#93;]
   C[GitHub secret: AZURE_SUBSCRIPTION_ID] --> D[Azure OIDC context]
   B --> E[Build ARM parameter file]
   D --> F[Subscription-scope What-If]
@@ -92,7 +92,7 @@ The `deploy-rg` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-rg` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/RG/resourcegroup.bicep` |
-| Input collection | `landingZones.resourceGroups[]` |
+| Input collection | `landingZones.resourceGroups&#91;&#93;` |
 | Azure CLI operation | `az deployment sub what-if`, followed by `create` |
 
 ## 7. Operational notes
