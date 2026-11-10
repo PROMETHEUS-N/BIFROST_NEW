@@ -16,20 +16,20 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `location` | `landingZones.vms[].location` | `input.json` |
-| `computerName` | `landingZones.vms[].computerName` | `input.json` |
-| `vmName` | `landingZones.vms[].name` | `input.json` |
-| `adminUsername` | `landingZones.vms[].adminUsername` | `input.json` |
+| `location` | `landingZones.vms&#91;&#93;.location` | `input.json` |
+| `computerName` | `landingZones.vms&#91;&#93;.computerName` | `input.json` |
+| `vmName` | `landingZones.vms&#91;&#93;.name` | `input.json` |
+| `adminUsername` | `landingZones.vms&#91;&#93;.adminUsername` | `input.json` |
 | `vmAdminPassword` | `secrets.VM_ADMIN_PASSWORD` mapped to `VM_ADMIN_PASSWORD`, then passed as secure Bicep parameter | GitHub Actions secret; never stored in `input.json` |
-| `vmSize` | `landingZones.vms[].vmSize` | `input.json` |
-| `tags` | `landingZones.vms[].tags` | `input.json` |
-| `vnetName` | `landingZones.vms[].vnetName` | `input.json` |
-| `subnetName` | `landingZones.vms[].subnetName` | `input.json` |
-| `nicName` | `landingZones.vms[].nicName` | `input.json` |
-| `privateIpAllocationMethod` | `landingZones.vms[].privateIpAllocationMethod` | `input.json` |
-| `imagePublisher / imageOffer / imageSku / imageVersion` | Corresponding fields in `landingZones.vms[]` | `input.json` |
-| `osDiskStorageAccountType / osDiskCreateOption / osDiskSizeGB` | Corresponding fields in `landingZones.vms[]` | `input.json` |
-| `enableBootDiagnostics` | `landingZones.vms[].enableBootDiagnostics` | `input.json` |
+| `vmSize` | `landingZones.vms&#91;&#93;.vmSize` | `input.json` |
+| `tags` | `landingZones.vms&#91;&#93;.tags` | `input.json` |
+| `vnetName` | `landingZones.vms&#91;&#93;.vnetName` | `input.json` |
+| `subnetName` | `landingZones.vms&#91;&#93;.subnetName` | `input.json` |
+| `nicName` | `landingZones.vms&#91;&#93;.nicName` | `input.json` |
+| `privateIpAllocationMethod` | `landingZones.vms&#91;&#93;.privateIpAllocationMethod` | `input.json` |
+| `imagePublisher / imageOffer / imageSku / imageVersion` | Corresponding fields in `landingZones.vms&#91;&#93;` | `input.json` |
+| `osDiskStorageAccountType / osDiskCreateOption / osDiskSizeGB` | Corresponding fields in `landingZones.vms&#91;&#93;` | `input.json` |
+| `enableBootDiagnostics` | `landingZones.vms&#91;&#93;.enableBootDiagnostics` | `input.json` |
 
 **Secret handling:** The VM administrator password comes only from GitHub Actions secret `VM_ADMIN_PASSWORD`. The secret is exposed to the job step as an environment variable and passed as a secure Bicep parameter; it must not be placed in `input.json`.
 
@@ -48,7 +48,7 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 ```mermaid
 flowchart TD
   A[deploy-openai completes] --> B[deploy-vm job]
-  C[input.json: vms[]] --> D[Map VM, image, disk and network settings]
+  C[input.json: vms&#91;&#93;] --> D[Map VM, image, disk and network settings]
   E[Existing VNet + subnet] --> F[Resolve network resource IDs]
   G[GitHub secret: VM_ADMIN_PASSWORD] --> H[Secure parameter injection]
   D --> I[What-If + vm.bicep]
@@ -109,7 +109,7 @@ The `deploy-vm` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-vm` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/compute/vm.bicep` |
-| Input collection | `landingZones.vms[]` |
+| Input collection | `landingZones.vms&#91;&#93;` |
 | Azure CLI operation | `az deployment group what-if`, followed by `create` |
 
 ## 7. Operational notes
