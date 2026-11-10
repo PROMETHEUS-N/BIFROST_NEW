@@ -47,15 +47,15 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 ```mermaid
 flowchart TD
-  A[deploy-keyvault completes] --> B[deploy-storage job]
-  C[input.json: storageAccounts&#91;&#93;] --> D[Map account and blob settings]
-  D --> E[What-If]
-  E --> F[storageAccount.bicep]
-  F --> G[Generate base name + 5-char hash]
-  G --> H[Create Storage Account]
-  H --> I[Create Blob Service]
-  I --> J[Create each configured container]
-  J --> K[Azure resources + deployment outputs]
+ A["deploy-keyvault completes"] --> B["deploy-storage job"]
+ C["input.json: storageAccounts array"] --> D["Map account and blob settings"]
+ D --> E["What-If"]
+ E --> F["storageAccount.bicep"]
+ F --> G["Generate base name plus 5-char hash"]
+ G --> H["Create Storage Account"]
+ H --> I["Create Blob Service"]
+ I --> J["Create each configured container"]
+ J --> K["Azure resources and deployment outputs"]
 ```
 
 ## 4. Resource naming structure
