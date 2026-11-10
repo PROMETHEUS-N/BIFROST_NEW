@@ -37,13 +37,13 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 ```mermaid
 flowchart TD
-  A[deploy-nsg completes] --> B[deploy-route-table job]
-  C[input.json: routeTables&#91;&#93;] --> D[Map route table properties]
-  D --> E[Temporary ARM parameters]
-  E --> F[What-If]
-  F --> G[routetable.bicep]
-  G --> H[Create route table]
-  H --> I[Azure Route Tables + deployment outputs]
+ A["deploy-nsg completes"] --> B["deploy-route-table job"]
+ C["input.json: routeTables array"] --> D["Map route table properties"]
+ D --> E["Temporary ARM parameters"]
+ E --> F["What-If"]
+ F --> G["routetable.bicep"]
+ G --> H["Create route table"]
+ H --> I["Azure Route Tables and deployment outputs"]
 ```
 
 ## 4. Resource naming structure
