@@ -16,11 +16,11 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `routeTableName` | `landingZones.routeTables[].name` | `input.json` |
-| `location` | `landingZones.routeTables[].location` | `input.json` |
-| `disableBgpRoutePropagation` | `landingZones.routeTables[].disableBgpRoutePropagation` | `input.json` |
-| `routes` | `landingZones.routeTables[].routes` | `input.json` |
-| `tags` | `landingZones.routeTables[].tags` | `input.json` |
+| `routeTableName` | `landingZones.routeTables&#91;&#93;.name` | `input.json` |
+| `location` | `landingZones.routeTables&#91;&#93;.location` | `input.json` |
+| `disableBgpRoutePropagation` | `landingZones.routeTables&#91;&#93;.disableBgpRoutePropagation` | `input.json` |
+| `routes` | `landingZones.routeTables&#91;&#93;.routes` | `input.json` |
+| `tags` | `landingZones.routeTables&#91;&#93;.tags` | `input.json` |
 
 **Secret handling:** No resource-specific password is consumed by this module. 
 
@@ -38,7 +38,7 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 ```mermaid
 flowchart TD
   A[deploy-nsg completes] --> B[deploy-route-table job]
-  C[input.json: routeTables[]] --> D[Map route table properties]
+  C[input.json: routeTables&#91;&#93;] --> D[Map route table properties]
   D --> E[Temporary ARM parameters]
   E --> F[What-If]
   F --> G[routetable.bicep]
@@ -95,7 +95,7 @@ The `deploy-route-table` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-route-table` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/networking/routetable.bicep` |
-| Input collection | `landingZones.routeTables[]` |
+| Input collection | `landingZones.routeTables&#91;&#93;` |
 | Azure CLI operation | `az deployment group what-if`, followed by `create` |
 
 ## 7. Operational notes
