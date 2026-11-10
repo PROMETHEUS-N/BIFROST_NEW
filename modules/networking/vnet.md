@@ -16,11 +16,11 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `location` | `landingZones.vnets[].location` | `input.json` |
-| `vnetName` | `landingZones.vnets[].name` | `input.json` |
-| `addressPrefixes` | `landingZones.vnets[].addressPrefixes` | `input.json` |
-| `tags` | `landingZones.vnets[].tags` | `input.json` |
-| `dnsServers` | `landingZones.vnets[].dnsServers` | `input.json` |
+| `location` | `landingZones.vnets&#91;&#93;.location` | `input.json` |
+| `vnetName` | `landingZones.vnets&#91;&#93;.name` | `input.json` |
+| `addressPrefixes` | `landingZones.vnets&#91;&#93;.addressPrefixes` | `input.json` |
+| `tags` | `landingZones.vnets&#91;&#93;.tags` | `input.json` |
+| `dnsServers` | `landingZones.vnets&#91;&#93;.dnsServers` | `input.json` |
 | `subnets` | Hard-coded as an empty array `[]` in the workflow parameter map | Workflow logic (not `input.json`) |
 
 **Secret handling:** No resource-specific password is consumed by this module. 
@@ -40,7 +40,7 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 ```mermaid
 flowchart TD
   A[deploy-route-table completes] --> B[deploy-vnet job]
-  C[input.json: vnets[]] --> D[Check whether VNet exists]
+  C[input.json: vnets&#91;&#93;] --> D[Check whether VNet exists]
   D -->|Exists| S[Skip VNet template]
   D -->|Missing| E[Map VNet properties; subnets = empty]
   E --> F[What-If]
@@ -99,7 +99,7 @@ The `deploy-vnet` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-vnet` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/networking/vnet.bicep` |
-| Input collection | `landingZones.vnets[]` |
+| Input collection | `landingZones.vnets&#91;&#93;` |
 | Azure CLI operation | `az deployment group what-if`, followed by `create` |
 
 ## 7. Operational notes
