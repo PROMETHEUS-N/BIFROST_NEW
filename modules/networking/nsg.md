@@ -36,13 +36,13 @@ Resource group creation is the first provisioning stage.
 
 ```mermaid
 flowchart TD
-  A[deploy-rg completes] --> B[deploy-nsg job]
-  C[input.json: nsgs&#91;&#93;] --> D[Map name, location, rules, tags]
-  D --> E[Generate temporary ARM parameters]
-  E --> F[Resource-group What-If]
-  F --> G[modules/networking/nsg.bicep]
-  G --> H[Create NSG]
-  H --> I[Azure NSG resource + deployment outputs]
+ A["deploy-rg completes"] --> B["deploy-nsg job"]
+ C["input.json: nsgs array"] --> D["Map name, location, rules and tags"]
+ D --> E["Generate temporary ARM parameters"]
+ E --> F["Resource-group What-If"]
+ F --> G["modules/networking/nsg.bicep"]
+ G --> H["Create NSG"]
+ H --> I["Azure NSG resource and deployment outputs"]
 ```
 
 ## 4. Resource naming structure
