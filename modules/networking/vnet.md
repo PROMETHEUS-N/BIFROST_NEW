@@ -39,15 +39,15 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 ```mermaid
 flowchart TD
-  A[deploy-route-table completes] --> B[deploy-vnet job]
-  C[input.json: vnets&#91;&#93;] --> D[Check whether VNet exists]
-  D -->|Exists| S[Skip VNet template]
-  D -->|Missing| E[Map VNet properties; subnets = empty]
-  E --> F[What-If]
-  F --> G[vnet.bicep]
-  G --> H[Create VNet]
-  H --> I[Azure VNet + deployment outputs]
-  I --> J[deploy-subnet can proceed]
+ A["deploy-route-table completes"] --> B["deploy-vnet job"]
+ C["input.json: vnets array"] --> D["Check whether VNet exists"]
+ D -->|Exists| S["Skip VNet template"]
+ D -->|Missing| E["Map VNet properties; no subnets yet"]
+ E --> F["What-If"]
+ F --> G["vnet.bicep"]
+ G --> H["Create VNet"]
+ H --> I["Azure VNet and deployment outputs"]
+ I --> J["deploy-subnet can proceed"]
 ```
 
 ## 4. Resource naming structure
