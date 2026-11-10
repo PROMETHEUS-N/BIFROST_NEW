@@ -46,14 +46,14 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 ```mermaid
 flowchart TD
-  A[deploy-storage completes] --> B[deploy-sql job]
-  C[input.json: sqlDatabases&#91;&#93;] --> D[Map server/database configuration]
-  E[GitHub secret: SQL_ADMIN_PASSWORD] --> F[Secure parameter injection]
-  D --> G[What-If + sql.bicep]
-  F --> G
-  G --> H[Create SQL logical server]
-  H --> I[Create child database]
-  I --> J[Azure SQL resources + deployment outputs]
+ A["deploy-storage completes"] --> B["deploy-sql job"]
+ C["input.json: sqlDatabases array"] --> D["Map server and database configuration"]
+ E["GitHub secret: SQL_ADMIN_PASSWORD"] --> F["Secure parameter injection"]
+ D --> G["What-If with sql.bicep"]
+ F --> G
+ G --> H["Create SQL logical server"]
+ H --> I["Create child database"]
+ I --> J["Azure SQL resources and deployment outputs"]
 ```
 
 ## 4. Resource naming structure
