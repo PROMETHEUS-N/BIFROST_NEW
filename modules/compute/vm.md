@@ -47,16 +47,16 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 ```mermaid
 flowchart TD
-  A[deploy-openai completes] --> B[deploy-vm job]
-  C[input.json: vms&#91;&#93;] --> D[Map VM, image, disk and network settings]
-  E[Existing VNet + subnet] --> F[Resolve network resource IDs]
-  G[GitHub secret: VM_ADMIN_PASSWORD] --> H[Secure parameter injection]
-  D --> I[What-If + vm.bicep]
-  F --> I
-  H --> I
-  I --> J[Create NIC]
-  J --> K[Create Windows VM attached to NIC]
-  K --> L[Azure VM + deployment outputs]
+ A["deploy-openai completes"] --> B["deploy-vm job"]
+ C["input.json: vms array"] --> D["Map VM, image, disk and network settings"]
+ E["Existing VNet and subnet"] --> F["Resolve network resource IDs"]
+ G["GitHub secret: VM_ADMIN_PASSWORD"] --> H["Secure parameter injection"]
+ D --> I["What-If with vm.bicep"]
+ F --> I
+ H --> I
+ I --> J["Create NIC"]
+ J --> K["Create Windows VM attached to NIC"]
+ K --> L["Azure VM and deployment outputs"]
 ```
 
 ## 4. Resource naming structure
