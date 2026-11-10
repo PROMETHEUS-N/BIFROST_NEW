@@ -16,10 +16,10 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `location` | `landingZones.nsgs[].location` | `input.json` |
-| `nsgName` | `landingZones.nsgs[].name` | `input.json` |
-| `securityRules` | `landingZones.nsgs[].securityRules` | `input.json` |
-| `tags` | `landingZones.nsgs[].tags` | `input.json` |
+| `location` | `landingZones.nsgs&#91;&#93;.location` | `input.json` |
+| `nsgName` | `landingZones.nsgs&#91;&#93;.name` | `input.json` |
+| `securityRules` | `landingZones.nsgs&#91;&#93;.securityRules` | `input.json` |
+| `tags` | `landingZones.nsgs&#91;&#93;.tags` | `input.json` |
 
 **Secret handling:** No resource-specific password is consumed by this module. 
 
@@ -37,7 +37,7 @@ Resource group creation is the first provisioning stage.
 ```mermaid
 flowchart TD
   A[deploy-rg completes] --> B[deploy-nsg job]
-  C[input.json: nsgs[]] --> D[Map name, location, rules, tags]
+  C[input.json: nsgs&#91;&#93;] --> D[Map name, location, rules, tags]
   D --> E[Generate temporary ARM parameters]
   E --> F[Resource-group What-If]
   F --> G[modules/networking/nsg.bicep]
@@ -94,7 +94,7 @@ The `deploy-nsg` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-nsg` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/networking/nsg.bicep` |
-| Input collection | `landingZones.nsgs[]` |
+| Input collection | `landingZones.nsgs&#91;&#93;` |
 | Azure CLI operation | `az deployment group what-if`, followed by `create` |
 
 ## 7. Operational notes
