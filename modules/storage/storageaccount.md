@@ -16,20 +16,20 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `storageAccountName` | `landingZones.storageAccounts[].name` | `input.json` (base name) |
-| `location` | `landingZones.storageAccounts[].location` | `input.json` |
-| `tags` | `landingZones.storageAccounts[].tags` | `input.json` |
-| `skuName` | `landingZones.storageAccounts[].skuName` | `input.json` |
-| `kind` | `landingZones.storageAccounts[].kind` | `input.json` |
-| `accessTier` | `landingZones.storageAccounts[].accessTier` | `input.json` |
-| `minimumTlsVersion` | `landingZones.storageAccounts[].minimumTlsVersion` | `input.json` |
-| `supportsHttpsTrafficOnly` | `landingZones.storageAccounts[].supportsHttpsTrafficOnly` | `input.json` |
-| `allowBlobPublicAccess` | `landingZones.storageAccounts[].allowBlobPublicAccess` | `input.json` |
-| `allowSharedKeyAccess` | `landingZones.storageAccounts[].allowSharedKeyAccess` | `input.json` |
-| `publicNetworkAccess` | `landingZones.storageAccounts[].publicNetworkAccess` | `input.json` |
-| `containerNames` | `landingZones.storageAccounts[].containerNames` | `input.json` |
-| `blobServiceName` | `landingZones.storageAccounts[].blobServiceName` | `input.json` |
-| `containerPublicAccess` | `landingZones.storageAccounts[].containerPublicAccess` | `input.json` |
+| `storageAccountName` | `landingZones.storageAccounts&#91;&#93;.name` | `input.json` (base name) |
+| `location` | `landingZones.storageAccounts&#91;&#93;.location` | `input.json` |
+| `tags` | `landingZones.storageAccounts&#91;&#93;.tags` | `input.json` |
+| `skuName` | `landingZones.storageAccounts&#91;&#93;.skuName` | `input.json` |
+| `kind` | `landingZones.storageAccounts&#91;&#93;.kind` | `input.json` |
+| `accessTier` | `landingZones.storageAccounts&#91;&#93;.accessTier` | `input.json` |
+| `minimumTlsVersion` | `landingZones.storageAccounts&#91;&#93;.minimumTlsVersion` | `input.json` |
+| `supportsHttpsTrafficOnly` | `landingZones.storageAccounts&#91;&#93;.supportsHttpsTrafficOnly` | `input.json` |
+| `allowBlobPublicAccess` | `landingZones.storageAccounts&#91;&#93;.allowBlobPublicAccess` | `input.json` |
+| `allowSharedKeyAccess` | `landingZones.storageAccounts&#91;&#93;.allowSharedKeyAccess` | `input.json` |
+| `publicNetworkAccess` | `landingZones.storageAccounts&#91;&#93;.publicNetworkAccess` | `input.json` |
+| `containerNames` | `landingZones.storageAccounts&#91;&#93;.containerNames` | `input.json` |
+| `blobServiceName` | `landingZones.storageAccounts&#91;&#93;.blobServiceName` | `input.json` |
+| `containerPublicAccess` | `landingZones.storageAccounts&#91;&#93;.containerPublicAccess` | `input.json` |
 
 **Secret handling:** No resource-specific password is consumed by this module. 
 
@@ -48,7 +48,7 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 ```mermaid
 flowchart TD
   A[deploy-keyvault completes] --> B[deploy-storage job]
-  C[input.json: storageAccounts[]] --> D[Map account and blob settings]
+  C[input.json: storageAccounts&#91;&#93;] --> D[Map account and blob settings]
   D --> E[What-If]
   E --> F[storageAccount.bicep]
   F --> G[Generate base name + 5-char hash]
@@ -108,7 +108,7 @@ The `deploy-storage` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-storage` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/storage/storageAccount.bicep` |
-| Input collection | `landingZones.storageAccounts[]` |
+| Input collection | `landingZones.storageAccounts&#91;&#93;` |
 | Azure CLI operation | `az deployment group what-if`, followed by `create` |
 
 ## 7. Operational notes
