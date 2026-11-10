@@ -16,16 +16,16 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `keyVaultName` | `landingZones.keyVaults[].name` | `input.json` (base name) |
-| `location` | `landingZones.keyVaults[].location` | `input.json` |
+| `keyVaultName` | `landingZones.keyVaults&#91;&#93;.name` | `input.json` (base name) |
+| `location` | `landingZones.keyVaults&#91;&#93;.location` | `input.json` |
 | `tenantId` | Retrieved at runtime using `az account show --query tenantId -o tsv` | Authenticated Azure context; not `input.json` and not a GitHub secret parameter |
-| `skuName` | `landingZones.keyVaults[].skuName` | `input.json` |
-| `skuFamily` | `landingZones.keyVaults[].skuFamily` | `input.json` |
-| `enableRbacAuthorization` | `landingZones.keyVaults[].enableRbacAuthorization` | `input.json` |
-| `enablePurgeProtection` | `landingZones.keyVaults[].enablePurgeProtection` | `input.json` |
-| `softDeleteRetentionInDays` | `landingZones.keyVaults[].softDeleteRetentionInDays` | `input.json` |
-| `publicNetworkAccess` | `landingZones.keyVaults[].publicNetworkAccess` | `input.json` |
-| `tags` | `landingZones.keyVaults[].tags` | `input.json` |
+| `skuName` | `landingZones.keyVaults&#91;&#93;.skuName` | `input.json` |
+| `skuFamily` | `landingZones.keyVaults&#91;&#93;.skuFamily` | `input.json` |
+| `enableRbacAuthorization` | `landingZones.keyVaults&#91;&#93;.enableRbacAuthorization` | `input.json` |
+| `enablePurgeProtection` | `landingZones.keyVaults&#91;&#93;.enablePurgeProtection` | `input.json` |
+| `softDeleteRetentionInDays` | `landingZones.keyVaults&#91;&#93;.softDeleteRetentionInDays` | `input.json` |
+| `publicNetworkAccess` | `landingZones.keyVaults&#91;&#93;.publicNetworkAccess` | `input.json` |
+| `tags` | `landingZones.keyVaults&#91;&#93;.tags` | `input.json` |
 
 **Secret handling:** No resource-specific password is consumed by this module. 
 
@@ -44,7 +44,7 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 ```mermaid
 flowchart TD
   A[deploy-subnet completes] --> B[deploy-keyvault job]
-  C[input.json: keyVaults[]] --> D[Map configuration]
+  C[input.json: keyVaults&#91;&#93;] --> D[Map configuration]
   E[Azure CLI account show] --> F[Resolve tenantId]
   D --> G[Build parameters]
   F --> G
@@ -104,7 +104,7 @@ The `deploy-keyvault` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-keyvault` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/security/keyvault.bicep` |
-| Input collection | `landingZones.keyVaults[]` |
+| Input collection | `landingZones.keyVaults&#91;&#93;` |
 | Azure CLI operation | `az deployment group what-if`, followed by `create` |
 
 ## 7. Operational notes
