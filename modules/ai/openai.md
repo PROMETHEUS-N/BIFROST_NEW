@@ -39,13 +39,13 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 ```mermaid
 flowchart TD
-  A[deploy-sql completes] --> B[deploy-openai job]
-  C[input.json: openAiServices&#91;&#93;] --> D[Map account properties]
-  D --> E[What-If]
-  E --> F[openai.bicep]
-  F --> G[Generate base name + 5-char hash]
-  G --> H[Create OpenAI account]
-  H --> I[Azure OpenAI resource + outputs]
+ A["deploy-sql completes"] --> B["deploy-openai job"]
+ C["input.json: openAiServices array"] --> D["Map account properties"]
+ D --> E["What-If"]
+ E --> F["openai.bicep"]
+ F --> G["Generate base name plus 5-char hash"]
+ G --> H["Create OpenAI account"]
+ H --> I["Azure OpenAI resource and outputs"]
 ```
 
 ## 4. Resource naming structure
