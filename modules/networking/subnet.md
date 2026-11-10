@@ -16,14 +16,14 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 
 | Bicep parameter | Source / JSON path | Value source |
 |---|---|---|
-| `vnetName` | `landingZones.subnets[].vnetName` | `input.json` |
-| `subnetName` | `landingZones.subnets[].name` | `input.json` |
-| `addressPrefix` | `landingZones.subnets[].addressPrefix` | `input.json` |
-| `networkSecurityGroupName` | `landingZones.subnets[].networkSecurityGroupName` | `input.json` |
-| `routeTableName` | `landingZones.subnets[].routeTableName` | `input.json` |
-| `serviceEndpoints` | `landingZones.subnets[].serviceEndpoints` | `input.json` |
-| `privateEndpointNetworkPolicies` | `landingZones.subnets[].privateEndpointNetworkPolicies` | `input.json` |
-| `privateLinkServiceNetworkPolicies` | `landingZones.subnets[].privateLinkServiceNetworkPolicies` | `input.json` |
+| `vnetName` | `landingZones.subnets&#91;&#93;.vnetName` | `input.json` |
+| `subnetName` | `landingZones.subnets&#91;&#93;.name` | `input.json` |
+| `addressPrefix` | `landingZones.subnets&#91;&#93;.addressPrefix` | `input.json` |
+| `networkSecurityGroupName` | `landingZones.subnets&#91;&#93;.networkSecurityGroupName` | `input.json` |
+| `routeTableName` | `landingZones.subnets&#91;&#93;.routeTableName` | `input.json` |
+| `serviceEndpoints` | `landingZones.subnets&#91;&#93;.serviceEndpoints` | `input.json` |
+| `privateEndpointNetworkPolicies` | `landingZones.subnets&#91;&#93;.privateEndpointNetworkPolicies` | `input.json` |
+| `privateLinkServiceNetworkPolicies` | `landingZones.subnets&#91;&#93;.privateLinkServiceNetworkPolicies` | `input.json` |
 
 **Secret handling:** No resource-specific password is consumed by this module. 
 
@@ -42,7 +42,7 @@ The workflow does not pass the whole JSON object directly. It explicitly maps th
 ```mermaid
 flowchart TD
   A[deploy-vnet completes] --> B[deploy-subnet job]
-  C[input.json: subnets[]] --> D[Resolve existing VNet]
+  C[input.json: subnets&#91;&#93;] --> D[Resolve existing VNet]
   E[Previously deployed NSG] --> F[Subnet association]
   G[Previously deployed route table] --> F
   D --> H[Map subnet parameters]
@@ -102,7 +102,7 @@ The `deploy-subnet` job in `.github/workflows/deploy.yml`:
 | Job ID | `deploy-subnet` |
 | Display name | See the job's `name` in `.github/workflows/deploy.yml` |
 | Template path | `modules/networking/subnet.bicep` |
-| Input collection | `landingZones.subnets[]` |
+| Input collection | `landingZones.subnets&#91;&#93;` |
 | Azure CLI operation | `az deployment group what-if`, followed by `create` |
 
 ## 7. Operational notes
