@@ -34,14 +34,14 @@ Resource group creation is the first provisioning stage.
 
 ```mermaid
 flowchart TD
-  A[GitHub Actions: deploy-rg] --> B[input.json: resourceGroups&#91;&#93;]
-  C[GitHub secret: AZURE_SUBSCRIPTION_ID] --> D[Azure OIDC context]
-  B --> E[Build ARM parameter file]
-  D --> F[Subscription-scope What-If]
-  E --> F
-  F --> G[resourcegroup.bicep]
-  G --> H[Create resource group]
-  H --> I[Azure Resource Groups / deployment history]
+ A["GitHub Actions: deploy-rg"] --> B["input.json: resourceGroups array"]
+ C["GitHub secret: AZURE_SUBSCRIPTION_ID"] --> D["Azure OIDC context"]
+ B --> E["Build ARM parameter file"]
+ D --> F["Subscription-scope What-If"]
+ E --> F
+ F --> G["resourcegroup.bicep"]
+ G --> H["Create resource group"]
+ H --> I["Azure Resource Groups and deployment history"]
 ```
 
 ## 4. Resource naming structure
