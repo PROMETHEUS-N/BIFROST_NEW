@@ -1,0 +1,339 @@
+# Steps to Assign an Azure Role
+---
+
+## Step 1: Determine who needs access
+> You first need to determine who needs access. You can assign a role to a user, group, service principal, or managed identity. This is also called a security principal.
+
+### Security principal for a role assignment
+
+![alt text](image.png)
+
+|SNo | Role Assignment Name | Description |
+|---|---|
+| 1 | User | An individual who has a profile in Microsoft Entra ID. You can also assign roles to users in other tenants. For information about users in other organizations, see Microsoft Entra B2B. |
+| Group | A set of users created in Microsoft Entra ID. When you assign a role to a group, all users within that group have that role. |
+| Service principal | A security identity used by applications or services to access specific Azure resources. You can think of it as a user identity (username and password or certificate) for an application. |
+| Managed identity | An identity in Microsoft Entra ID that is automatically managed by Azure. You typically use managed identities when developing cloud applications to manage the credentials for authenticating to Azure services. |
+
+---
+
+## Step 2: Select the appropriate role
+> Permissions are grouped together into a role definition. 
+> It's typically just called a role. 
+> You can select from a list of several built-in roles. 
+> If the built-in roles don't meet the specific needs of your organization, you can create your own custom roles.
+
+![alt text](image-1.png)
+
+### Role definition for a role assignment
+
+> Roles are organized into job function roles and privileged administrator roles.
+
+### Job function roles
+
+Job function roles allow management of specific Azure resources. For example, the Virtual Machine Contributor role allows a user to create and manage virtual machines. To select the appropriate job function role, use these steps:
+
+1. Begin with the comprehensive article, Azure built-in roles. The table at the top of the article is an index into the details later in the article.
+
+2. In that article, navigate to the service category (such as compute, storage, and databases) for the resource to which you want to grant permissions. The easiest way to find what your looking for is typically to search the page for a relevant keyword, like "blob", "virtual machine", and so on.
+
+3. Review the roles listed for the service category and identify the specific actions you need. Again, always start with the most restrictive role.
+
+> For example, if a security principal needs to read blobs in an Azure storage account, but doesn't need write access, then choose Storage Blob Data Reader rather than Storage Blob Data Contributor (and definitely not the administrator-level Storage Blob Data Owner role). You can always update the role assignments later as needed.
+
+4. If you don't find a suitable role, you can create a custom role.
+
+### Privileged administrator roles
+
+> Privileged administrator roles are roles that grant privileged administrator access, such as the ability to manage Azure resources or assign roles to other users. 
+> The following roles are considered privileged and apply to all resource types.
+
+| Azure Role | Permissions |
+|---|---|
+| **Owner** | 1. Grants full access to manage all resources.<br>2. Assign roles in Azure RBAC. |
+| **Contributor** | 1. Grants full access to manage all resources.<br>2. Cannot assign roles in Azure RBAC.<br>3. Cannot manage assignments in Azure Blueprints or share image galleries. |
+| **Reservations Administrator** | 1. Manage all the reservations in a tenant.<br>2. Assign roles in Azure RBAC for reservations. |
+| **Role Based Access Control Administrator** | 1. Manage user access to Azure resources.<br>2. Assign roles in Azure RBAC.<br>3. Assign themselves or others the Owner role.<br>4. Cannot manage access using other ways, such as Azure Policy. |
+| **User Access Administrator** | 1. Manage user access to Azure resources.<br>2. Assign roles in Azure RBAC.<br>3. Assign themselves or others the Owner role. |
+
+---
+
+## Step 3: Identify the needed scope
+
+> Scope is the set of resources that the access applies to. 
+In Azure, you can specify a scope at four levels: management group, subscription, resource group, and resource. 
+Scopes are structured in a parent-child relationship. Each level of hierarchy makes the scope more specific. 
+You can assign roles at any of these levels of scope. 
+The level you select determines how widely the role is applied. 
+Lower levels inherit role permissions from higher levels.
+
+![alt text](image-2.png)
+
+When you assign a role at a parent scope, those permissions are inherited to the child scopes. For example:
+
+1. If you assign the Reader role to a user at the management group scope, that user can read everything in all subscriptions in the management group.
+2. If you assign the Billing Reader role to a group at the subscription scope, the members of that group can read billing data for every resource group and resource in the subscription.
+3. If you assign the Contributor role to an application at the resource group scope, it can manage resources of all types in that resource group, but not other resource groups in the subscription.
+
+It's a best practice to grant security principals the least privilege they need to perform their job. Avoid assigning broader roles at broader scopes even if it initially seems more convenient. By limiting roles and scopes, you limit what resources are at risk if the security principal is ever compromised. For more information, see Understand scope.
+
+---
+
+## Step 4: Check your prerequisites
+To assign roles, you must be signed in with a user that is assigned a role that has role assignments write permission, such as Role Based Access Control Administrator at the scope you are trying to assign the role. 
+Similarly, to remove a role assignment, you must have the role assignments delete permission.
+
+1. `Microsoft.Authorization/roleAssignments/write`
+2. `Microsoft.Authorization/roleAssignments/delete`
+
+If your user account doesn't have permission to assign a role within your subscription, you see an error message that your account "does not have authorization to perform action `Microsoft.Authorization/roleAssignments/write`." In this case, contact the administrators of your subscription as they can assign the permissions on your behalf.
+
+If you are using a service principal to assign roles, you might get the error "Insufficient privileges to complete the operation." This error is likely because Azure is attempting to look up the assignee identity in Microsoft Entra ID and the service principal cannot read Microsoft Entra ID by default. 
+In this case, you need to grant the service principal permissions to read data in the directory. 
+Alternatively, if you are using Azure CLI, you can create the role assignment by using the assignee object ID to skip the Microsoft Entra lookup.
+
+---
+
+## Step 5: Assign role
+
+Once you know the security principal, role, and scope, you can assign the role. 
+You can assign roles using the Azure portal, Azure PowerShell, Azure CLI, Azure SDKs, or REST APIs.
+
+You can have up to 5000 role assignments in each subscription. This limit includes role assignments at the subscription, resource group, and resource scopes. 
+Eligible role assignments and role assignments scheduled in the future do not count towards this limit. 
+You can have up to 500 role assignments in each management group.
+
+---
+
+
+# Assign Azure roles using Azure CLI
+
+Azure `role-based access control` (Azure `RBAC`) is the authorization system you use to manage access to Azure resources. 
+To grant access, you assign roles to `users`, `groups`, `service principals`, or `managed identities` at a particular scope. 
+
+This article describes how to assign roles using Azure CLI.
+
+### Prerequisites
+To assign roles, you must have:
+
+1. `Microsoft.Authorization/roleAssignments/write` permissions, such as Role Based Access Control Administrator
+2. Bash in Azure Cloud Shell or Azure CLI
+
+## Steps to assign an Azure role
+
+To assign a role consists of three elements: 
+ 1. Security Principal
+ 2. Role Definition
+ 3. Scope
+
+## Step 1: Determine who needs access
+
+You can assign a role to a `user`, `group`, `service principal`, or `managed identity`. 
+
+To assign a role, you might need to specify the unique ID of the object. 
+The ID has the format: `11111111-1111-1111-1111-111111111111`. 
+You can get the ID using the Azure portal or Azure CLI.
+
+#### User
+
+For a Microsoft Entra user, get the `user principal name`, such as `patlong@contoso.com` or the `user object ID`. 
+To get the object ID, you can use `az ad user show`.
+
+```azureCLI
+az ad user show --id "{principalName}" --query "id" --output tsv
+```
+
+#### Group
+
+For a Microsoft Entra group, you need the `group object ID`. To get the object ID, you can use `az ad group show` or `az ad group list`.
+
+```azureCLI
+az ad group show --group "{groupName}" --query "id" --output tsv
+```
+
+#### Service principal
+
+For a Microsoft Entra service principal (identity used by an application), you need the `service principal object ID`. 
+To get the object ID, you can use `az ad sp list`. For a service principal, use the object ID and not the application ID.
+
+```azureCLI
+az ad sp list --all --query "[].{displayName:displayName, id:id}" --output tsv
+```
+
+```azureCLI
+az ad sp list --display-name "{displayName}"
+```
+
+#### Managed identity
+
+For a `system-assigned` or a `user-assigned managed identity`, you need the `object ID`. 
+To get the object ID, you can `use az ad sp list`.
+
+```azureCLI
+az ad sp list --all --filter "servicePrincipalType eq 'ManagedIdentity'"
+```
+
+To just list user-assigned managed identities, you can use az identity list.
+
+```azureCLI
+az identity list
+```
+
+
+## Step 2: Select the appropriate role
+
+Permissions are grouped together into roles. 
+You can select from a list of several Azure built-in roles or you can use your own custom roles. 
+It's a best practice to grant access with the least privilege that is needed, so avoid assigning a broader role.
+
+#### To list roles and get the `unique role ID`, you can use `az role definition list`.
+
+```azureCLI
+az role definition list --query "[].{name:name, roleType:roleType, roleName:roleName}" --output tsv
+```
+
+Here's how to list the details of a particular role.
+
+```azureCLI
+az role definition list --name "{roleName}"
+```
+
+For more information, see List Azure role definitions.
+
+
+
+## Step 3: Identify the needed scope
+
+Azure provides `four` levels of `scope`: 
+
+```mermaid
+flowchart TB
+    MG["🏢 Management Group"]
+ 
+    subgraph SUBS["📂 Subscription Level"]
+        direction LR
+        S1["🔑 Subscription 1"]
+        S2["🔑 Subscription 2"]
+    end
+ 
+    subgraph RGS["📦 Resource Group Level"]
+        direction LR
+        RG1["Resource Group 1"]
+        RG2["Resource Group 2"]
+        RG3["Resource Group 3"]
+    end
+ 
+    subgraph RES["☁️ Resource Level"]
+        direction LR
+        R1["🌐 Virtual Network"]
+        R2["💾 Storage Account"]
+        R3["🖥️ Virtual Machine"]
+        R4["🗄️ SQL Database"]
+        R5["🔐 Key Vault"]
+    end
+ 
+    MG --> S1
+    MG --> S2
+ 
+    S1 --> RG1
+    S1 --> RG2
+    S2 --> RG3
+ 
+    RG1 --> R1
+    RG1 --> R2
+ 
+    RG2 --> R3
+    RG2 --> R4
+ 
+    RG3 --> R5
+ 
+    classDef management fill:#7030A0,stroke:#4C1D95,color:#fff,stroke-width:2px
+    classDef subscription fill:#D9A400,stroke:#A67C00,color:#000,stroke-width:2px
+    classDef resourceGroup fill:#0078D4,stroke:#005A9E,color:#fff,stroke-width:2px
+    classDef resource fill:#008272,stroke:#005B50,color:#fff,stroke-width:2px
+ 
+    class MG management
+    class S1,S2 subscription
+    class RG1,RG2,RG3 resourceGroup
+    class R1,R2,R3,R4,R5 resource
+ 
+ ```
+
+It's a best practice to grant access with the least privilege that is needed, so avoid assigning a role at a broader scope.
+
+#### Resource Scope
+
+For `resource scope`, you need the `resource ID` for the resource. 
+You can find the `resource ID` by looking at the properties of the resource in the Azure portal. 
+A resource ID has the following format.
+
+```text
+/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/{providerName}/{resourceType}/{resourceSubType}/{resourceName}
+```
+
+#### Resource group scope
+
+For `resource group` scope, you need the `name` of the `resource group`. 
+You can find the name on the Resource groups page in the Azure portal or you can use `az group list`.
+
+```azureCLI
+az group list --query "[].{name:name}" --output tsv
+```
+#### Subscription scope
+
+For subscription scope, you need the `subscription ID`. You can find the ID on the Subscriptions page in the Azure portal or you can use `az account list`.
+
+```azureCLI
+az account list --query "[].{name:name, id:id}" --output tsv
+```
+#### Management group scope
+
+For management group scope, you need the `management group name`. 
+You can find the name on the Management groups page in the Azure portal or you can use `az account management-group list`.
+
+```azureCLI
+az account management-group list --query "[].{name:name, id:id}" --output tsv
+```
+
+## Step 4: Assign role
+To assign a role, use the az role assignment create command. Depending on the scope, the command typically has one of the following formats.
+
+#### Resource scope
+
+```azurecli
+az role assignment create --assignee "{assignee}" --role "{roleNameOrId}" --scope "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/{providerName}/{resourceType}/{resourceSubType}/{resourceName}"
+```
+
+#### Resource group scope
+
+```azureCLI
+az role assignment create --assignee "{assignee}" --role "{roleNameOrId}" --scope "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}"
+```
+
+#### Subscription scope
+
+```azurecli
+az role assignment create --assignee "{assignee}" --role "{roleNameOrId}" --scope "/subscriptions/{subscriptionId}"
+```
+
+#### Management group scope
+
+```azureCLI
+az role assignment create --assignee "{assignee}" --role "{roleNameOrId}" --scope "/providers/Microsoft.Management/managementGroups/{managementGroupName}"
+```
+##### The following shows an example of the output when you assign the Virtual Machine Contributor role to a user at a resource group scope.
+
+```azureCLI
+{
+  "canDelegate": null,
+  "id": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Authorization/roleAssignments/{roleAssignmentId}",
+  "name": "{roleAssignmentId}",
+  "principalId": "{principalId}",
+  "principalType": "User",
+  "resourceGroup": "{resourceGroupName}",
+  "roleDefinitionId": "/subscriptions/{subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c",
+  "scope": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}",
+  "type": "Microsoft.Authorization/roleAssignments"
+}
+
+```
