@@ -389,3 +389,56 @@ jobs:
   #         foreach($x in @($cfg.landingZones.openAiServices)){& $az cognitiveservices account show -g $x.resourceGroupName -n $x.name --query name -o tsv;if($LASTEXITCODE -ne 0){throw "OpenAI verification failed: $($x.name)"}}
   #         foreach($x in @($cfg.landingZones.vms)){& $az vm show -g $x.resourceGroupName -n $x.name --query provisioningState -o tsv;if($LASTEXITCODE -ne 0){throw "VM verification failed: $($x.name)"}}
   #         Write-Host "All configured resources were verified."
+
+  deploy-rbac:
+    name: Deploy RBAC assignments
+    runs-on: [self-hosted, X64, Windows]
+    needs: deploy-vm
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Resolve principals and assign resource-group roles
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $az = "C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.cmd"
+          $cfg = Get-Content "input.json" -Raw | ConvertFrom-Json
+
+          foreach ($access in @($cfg.rbac.resourceGroupAccess)) {
+            if ([string]::IsNullOrWhiteSpace($access.principalEmail)) { throw "RBAC principalEmail is required." }
+            $targetRg = @($cfg.landingZones.resourceGroups | Where-Object { $_.rgName -eq $access.resourceGroupName })
+            if ($targetRg.Count -ne 1) { throw "RBAC target resource group '$($access.resourceGroupName)' must match exactly one resource group in landingZones.resourceGroups." }
+
+            $principalId = & $az ad user show --id $access.principalEmail --query id -o tsv
+            if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($principalId)) {
+              throw "Could not resolve user '$($access.principalEmail)' in Microsoft Entra ID."
+            }
+
+            $parameters = @{
+              resourceGroupName = $access.resourceGroupName
+              principalId = $principalId.Trim()
+              roleDefinitionGuid = $access.roleDefinitionGuid
+              principalType = $access.principalType
+            }
+            $parameterFile = "$env:RUNNER_TEMP\rbac-rg-parameters.json"
+            $deploymentParameters = @{
+              '$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
+              contentVersion = '1.0.0.0'
+              parameters = @{}
+            }
+            foreach ($key in $parameters.Keys) {
+              $deploymentParameters.parameters[$key] = @{ value = $parameters[$key] }
+            }
+            $deploymentParameters | ConvertTo-Json -Depth 20 | Set-Content -Path $parameterFile -Encoding utf8
+
+            & $az deployment sub what-if --name "rbac-rg-whatif-${{ github.run_id }}" --location $cfg.deployment.location --template-file "modules/RBAC/RBAC_resource_group.bicep" --parameters "@$parameterFile"
+            if ($LASTEXITCODE -ne 0) { throw "RBAC What-If failed for '$($access.resourceGroupName)'." }
+
+            & $az deployment sub create --name "rbac-rg-${{ github.run_id }}" --location $cfg.deployment.location --template-file "modules/RBAC/RBAC_resource_group.bicep" --parameters "@$parameterFile" --output table
+            if ($LASTEXITCODE -ne 0) { throw "RBAC assignment failed for '$($access.resourceGroupName)'." }
+          }
