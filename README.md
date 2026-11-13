@@ -185,3 +185,16 @@ The RBAC deployment stage is implemented as a separate job in `.github/workflows
 3. Treat role assignment changes as security-sensitive changes and keep them least-privileged.
 4. If principal lookup or role assignment fails, inspect the Azure CLI error and verify directory-read access, the principal's existence, the target resource group's existence, and the deployment identity's role-assignment permissions.
 5. The workflow's current automated path is **resource-group access only**. Add explicit input handling and deployment steps before assuming subscription-level or resource-level assignments are automated.
+
+
+### RBAC documentation and implementation checklist
+
+For the complete implementation readiness checklist, outstanding tasks, ticket input contract, validation requirements, testing plan, and definition of done, see [`modules/RBAC/IMPLEMENTATION_PLAN.md`](modules/RBAC/IMPLEMENTATION_PLAN.md).
+
+Scope-specific contracts document the parameters, input sources, validation, generated assignment IDs, and Bicep outputs:
+
+- [Subscription scope](modules/RBAC/README_subscription.md)
+- [Resource-group scope](modules/RBAC/README_resource_group.md)
+- [Resource scope](modules/RBAC/README_resource.md)
+
+The centralized built-in role ID catalogue (`ROLE_IDS.md`) is still a follow-up task; do not treat the sample Reader GUID as a complete role catalogue.
