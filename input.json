@@ -15,7 +15,6 @@
   "deployment": {
     "location": "EastUS"
   },
-  
   "landingZones": {
     "resourceGroups": [
       {
@@ -188,6 +187,17 @@
           "Workload": "pikehex-cloud-migration",
           "ManagedBy": "Bicep"
         }
+      }
+    ]
+  },
+  "rbac": {
+    "resourceGroupAccess": [
+      {
+        "resourceGroupName": "rg-pikehex-dev-EastUS-001",
+        "principalEmail": "kureti.venkat.nishit@gmail.com",
+        "principalType": "User",
+        "roleDefinitionName": "Reader",
+        "roleDefinitionGuid": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
       }
     ]
   }
