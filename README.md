@@ -154,3 +154,34 @@ az storage account check-name --name stpikehexdev9m4x7 -o json
 Azure OpenAI account-name availability is also subject to Azure Cognitive Services name and regional availability checks. These candidate names have not been reserved or verified by this repository update. If Azure reports a name is unavailable, select another fixed suffix once, update `input.json`, and keep it unchanged for later runs.
 
 The workflow prints the configured Key Vault, Storage Account, and Azure OpenAI names in the corresponding deployment job logs to make it easier to confirm which `input.json` version was checked out.
+
+
+## 🔐 RBAC — Important implementation notes
+
+The RBAC deployment stage is implemented as a separate job in `.github/workflows/deploy.yml`. It runs after `deploy-vm`, so the resource groups created by the infrastructure deployment are available before role assignments are attempted.
+
+### Prerequisites and permissions
+
+- **The target principal must already exist in Microsoft Entra ID.** This implementation assigns access to an existing user; it does not create users, groups, service principals, or managed identities.
+- For the current resource-group workflow, provide the user's sign-in email in `input.json`. The job resolves that email to an Entra object ID with `az ad user show`. The identity used by Azure CLI must have sufficient Microsoft Graph / directory-read access to look up that user.
+- The GitHub Actions deployment identity must be authorized to create role assignments at the requested scope. At minimum, it needs `Microsoft.Authorization/roleAssignments/write` at that scope. Common built-in roles that can provide this permission include **User Access Administrator** and **Owner**, subject to any applicable Azure conditions and restrictions.
+- The target resource group must exist before its role assignment is created. The workflow checks the configured resource-group name against the resource groups in `landingZones` rather than accepting an arbitrary scope string.
+- Use the least-privilege role required for the task. The sample `input.json` entry uses the built-in **Reader** role (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) as an example; review and approve any role change before deployment.
+
+### Scope coverage and current workflow wiring
+
+| Scope | Template | Current automation status |
+|---|---|---|
+| Subscription | `modules/RBAC/RBAC_subscription.bicep` | Template available; not wired into the current `input.json` deployment path |
+| Resource group | `modules/RBAC/RBAC_resource_group.bicep` | Integrated in `deploy.yml` through `rbac.resourceGroupAccess[]` |
+| Resource | `modules/RBAC/RBAC_resource.bicep` | Template available; currently typed for an existing Storage Account and not wired into the workflow |
+
+> ⚠️ **Resource-level scope limitation:** `RBAC_resource.bicep` currently targets an existing Storage Account. It is not yet a generic resource-type module for VMs, Key Vaults, SQL databases, or every Azure resource provider. Confirm the target resource type and scope before reusing or extending this template.
+
+### Operational guidance
+
+1. Validate the principal, target scope, and role definition before running the workflow.
+2. Review the RBAC What-If output before applying changes.
+3. Treat role assignment changes as security-sensitive changes and keep them least-privileged.
+4. If principal lookup or role assignment fails, inspect the Azure CLI error and verify directory-read access, the principal's existence, the target resource group's existence, and the deployment identity's role-assignment permissions.
+5. The workflow's current automated path is **resource-group access only**. Add explicit input handling and deployment steps before assuming subscription-level or resource-level assignments are automated.
