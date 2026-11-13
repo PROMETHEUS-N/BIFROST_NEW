@@ -1,8 +1,8 @@
 {
   "environment": "dev",
   "request": {
-    "ticketId": "PIKE-12345",
-    "requestedBy": "your.email@company.com",
+    "ticketId": "PIKE-Test-001",
+    "requestedBy": "vnishitkureti-hexaware@pike.com",
     "approved": true,
     "environment": "dev",
     "deploymentMethod": "Bicep",
@@ -194,7 +194,7 @@
     "resourceGroupAccess": [
       {
         "resourceGroupName": "rg-pikehex-dev-EastUS-001",
-        "principalEmail": "kureti.venkat.nishit@gmail.com",
+        "principalEmail": "vnishitkureti-hexaware@pike.com",
         "principalType": "User",
         "roleDefinitionName": "Reader",
         "roleDefinitionGuid": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
