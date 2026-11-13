@@ -535,22 +535,34 @@ jobs:
             param($Access)
 
             if ([string]::IsNullOrWhiteSpace($Access.principalEmail)) {
-              throw "principalEmail is required."
+              throw "INPUT ERROR: principalEmail is missing."
             }
 
             if ($Access.principalType -ne "User") {
-              throw "Currently only User principal lookup is implemented."
+              throw "UNSUPPORTED: Only User principal lookup is currently implemented."
             }
 
             $id = & $az ad user show `
-              --id $Access.principalEmail `
-              --query id -o tsv
+                --id $Access.principalEmail `
+                --query id -o tsv 2>&1
 
-            if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($id)) {
-              throw "Unable to resolve Entra user: $($Access.principalEmail)"
+            if ($LASTEXITCODE -ne 0) {
+              $errorText = $id -join "`n"
+
+              if ($errorText -match "Insufficient privileges") {
+                throw "ENTRA PERMISSION ERROR: GitHub Actions identity cannot read Entra users. Check Microsoft Graph permissions and admin consent."
+              }
+
+              throw "ENTRA LOOKUP ERROR: Unable to resolve $($Access.principalEmail). Details: $errorText"
             }
 
-            return $id.Trim()
+            $principalId = ($id -join "").Trim()
+
+            if ([string]::IsNullOrWhiteSpace($principalId)) {
+              throw "ENTRA LOOKUP ERROR: No object ID returned for $($Access.principalEmail)."
+            }
+
+            return $principalId
           }
 
           function Invoke-RbacAssignment {
@@ -693,7 +705,34 @@ jobs:
           # 1. SUBSCRIPTION SCOPE
           # =========================================
 
-          $subscriptionAccess = @($cfg.rbac.subscriptionAccess)
+          # Read optional RBAC arrays safely. Missing arrays become empty arrays,
+          # so scopes not requested in input.json are skipped without false failures.
+          function Get-OptionalRbacEntries {
+            param(
+              $RbacConfig,
+              [string]$PropertyName
+            )
+
+            if ($null -eq $RbacConfig) {
+              return
+            }
+
+            $property = $RbacConfig.PSObject.Properties[$PropertyName]
+
+            if ($null -eq $property -or $null -eq $property.Value) {
+              return
+            }
+
+            return @(
+              $property.Value | Where-Object {
+                $null -ne $_
+              }
+            )
+          }
+
+          $subscriptionAccess = @(
+            Get-OptionalRbacEntries -RbacConfig $cfg.rbac -PropertyName "subscriptionAccess"
+          )
 
           if ($subscriptionAccess.Count -eq 0) {
             Write-Host "No subscription RBAC entries. Skipping."
@@ -714,7 +753,9 @@ jobs:
           # 2. RESOURCE GROUP SCOPE
           # =========================================
 
-          $resourceGroupAccess = @($cfg.rbac.resourceGroupAccess)
+          $resourceGroupAccess = @(
+            Get-OptionalRbacEntries -RbacConfig $cfg.rbac -PropertyName "resourceGroupAccess"
+          )
 
           if ($resourceGroupAccess.Count -eq 0) {
             Write-Host "No resource-group RBAC entries. Skipping."
@@ -754,7 +795,9 @@ jobs:
           # 3. RESOURCE SCOPE
           # =========================================
 
-          $resourceAccess = @($cfg.rbac.resourceAccess)
+          $resourceAccess = @(
+            Get-OptionalRbacEntries -RbacConfig $cfg.rbac -PropertyName "resourceAccess"
+          )
 
           if ($resourceAccess.Count -eq 0) {
             Write-Host "No resource-level RBAC entries. Skipping."
